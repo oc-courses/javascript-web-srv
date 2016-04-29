@@ -1,14 +1,31 @@
 <?php
 
-// Home page
+use Symfony\Component\HttpFoundation\Request;
+
+// Display all articles
 $app->get('/articles', function() use ($app) {
     $articles = getArticles($app);
     return $app['twig']->render('articles.html.twig', array('articles' => $articles));
 })->bind('articles');
 
+// Return all articles in JSON format
 $app->get('/api/articles', function() use ($app) {
     $articles = getArticles($app);
     return $app->json($articles);
+});
+
+// Return all articles in JSON format
+$app->post('/api/article', function(Request $request) use ($app) {
+    // Check request parameters
+    if (!$request->request->has('title')) {
+        return $app->json('Missing required parameter: title', 400);
+    }
+    if (!$request->request->has('content')) {
+        return $app->json('Missing required parameter: content', 400);
+    }
+    // Save the new article
+    insertArticle($request->request->get('title'), $request->request->get('content'), $app);
+    return $app->json(null, 201);  // 201 = Created
 });
 
 $app->get('/api/liens', function() use ($app) {

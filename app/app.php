@@ -18,6 +18,12 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/../jswebsrv.log',
+    'monolog.name' => 'JSWEBSSRV',
+    'monolog.level' => 'INFO'
+));
+$app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider());
 
 // Register JSON data decoder for JSON requests
 $app->before(function (Request $request) {
@@ -26,3 +32,5 @@ $app->before(function (Request $request) {
         $request->request->replace(is_array($data) ? $data : array());
     }
 });
+
+$app->after($app["cors"]);
