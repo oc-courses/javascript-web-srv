@@ -1,0 +1,11 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Témoignages{% endblock %}
+
+{% block content %}
+{% for testimonial in testimonials %}
+<p>{{ testimonial.pseudo }}
+{% else %}
+<div class="alert alert-warning">Aucun témoignage trouvé</div>
+{% endfor %}
+{% endblock %}

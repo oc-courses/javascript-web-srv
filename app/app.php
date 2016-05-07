@@ -34,3 +34,6 @@ $app->before(function (Request $request) {
 });
 
 $app->after($app["cors"]);
+
+// enable the debug mode
+$app['debug'] = true;

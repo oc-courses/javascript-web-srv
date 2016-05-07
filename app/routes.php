@@ -3,9 +3,14 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-// Display all articles
+// Home page
+$app->get('/', function() use ($app) {
+    return $app['twig']->render('index.html.twig');
+})->bind('home');
+
+// Display last articles
 $app->get('/articles', function() use ($app) {
-    $articles = getArticles($app);
+    $articles = getLastArticles($app);
     return $app['twig']->render('articles.html.twig', array('articles' => $articles));
 })->bind('articles');
 
@@ -15,16 +20,22 @@ $app->post('/article', function(Request $request) use ($app) {
     return $app->redirect($app['url_generator']->generate('articles'));
 });
 
-// Return all articles in JSON format
+// Return last articles in JSON format
 $app->get('/api/articles', function() use ($app) {
-    $articles = getArticles($app);
+    $articles = getLastArticles($app);
     return $app->json($articles);
 });
 
-// Add an article from JSON data
-$app->post('/api/article', function(Request $request) use ($app) {
-    $articleId = addArticle($request, $app);
-    return $app->json($articleId, 201);  // 201 = Created
+// Display all testimonials
+$app->get('/temoignages', function() use ($app) {
+    $testimonials = getTestimonials($app);
+    return $app['twig']->render('testimonials.html.twig', array('testimonials' => $testimonials));
+})->bind('testimonials');
+
+// Add a testimonial from JSON data
+$app->post('/api/temoignage', function(Request $request) use ($app) {
+    $testimonialId = addTestimonial($request, $app);
+    return $app->json($testimonialId, 201);  // 201 = Created
 });
 
 // Return words starting with a particular letter in JSON format

@@ -1,3 +1,4 @@
+drop table if exists testimonial;
 drop table if exists article;
 drop table if exists comment;
 drop table if exists link;
@@ -6,6 +7,13 @@ create table article (
     art_id integer not null primary key auto_increment,
     art_title varchar(100) not null,
     art_content varchar(2000) not null
+) engine=innodb character set utf8 collate utf8_unicode_ci;
+
+create table testimonial (
+    test_id integer not null primary key auto_increment,
+    test_nickname varchar(100) not null,
+    test_evaluation integer not null,
+    test_message varchar(1000)
 ) engine=innodb character set utf8 collate utf8_unicode_ci;
 
 create table link (

@@ -10,6 +10,3 @@ $app['db.options'] = array(
     'user'     => 'jswebsrv_user',
     'password' => 'secret',
 );
-
-// enable the debug mode
-$app['debug'] = true;
