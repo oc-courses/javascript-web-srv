@@ -17,7 +17,7 @@
 {% elseif testimonial.evaluation == 1 %}
     {% set evalText = 'nul' %}
 {% endif %}
-<p><strong>{{ testimonial.pseudo }}</strong> a terminé le cours, l'a trouvé {{ evalText }}
+<p><strong>{{ testimonial.pseudo }}</strong> a trouvé ce cours {{ evalText }}
 {% if testimonial.message %}
     et a dit : {{ testimonial.message }}
 {% endif %}
