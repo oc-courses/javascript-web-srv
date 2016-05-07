@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{ app.request.basepath }}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ app.request.basepath }}/css/style.css" rel="stylesheet">
-    <title>Serveur web JavaScript - {% block title %}{% endblock %}</title>
+    <title>jswebsrv - {% block title %}{% endblock %}</title>
 </head>
 <body>
     <div class="container">
@@ -22,8 +22,8 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse-target">
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ path('articles') }}"> Derniers articles</a></li>
-                        <li><a href="{{ path('testimonials') }}"> Témoignages</a></li>
+                        <li class="{% if articlesMenu is defined %}active{% endif %}"><a href="{{ path('articles') }}"> Derniers articles</a></li>
+                        <li class="{% if testimonialsMenu is defined %}active{% endif %}"><a href="{{ path('testimonials') }}"> Témoignages</a></li>
                     </ul>
                 </div>
             </div><!-- /.container -->

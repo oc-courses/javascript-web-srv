@@ -1,10 +1,27 @@
 {% extends "layout.html.twig" %}
+{% set testimonialsMenu = true %}
 
 {% block title %}Témoignages{% endblock %}
 
 {% block content %}
 {% for testimonial in testimonials %}
-<p>{{ testimonial.pseudo }}
+{% set evalText = '?' %}
+{% if testimonial.evaluation == 5 %}
+    {% set evalText = 'génial' %}
+{% elseif testimonial.evaluation == 4 %}
+    {% set evalText = 'très bien' %}
+{% elseif testimonial.evaluation == 3 %}
+    {% set evalText = 'pas mal' %}
+{% elseif testimonial.evaluation == 2 %}
+    {% set evalText = 'bof' %}
+{% elseif testimonial.evaluation == 1 %}
+    {% set evalText = 'nul' %}
+{% endif %}
+<p><strong>{{ testimonial.pseudo }}</strong> a terminé le cours, l'a trouvé {{ evalText }}
+{% if testimonial.message %}
+    et a dit : {{ testimonial.message }}
+{% endif %}
+</p>
 {% else %}
 <div class="alert alert-warning">Aucun témoignage trouvé</div>
 {% endfor %}

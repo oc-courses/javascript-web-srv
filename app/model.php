@@ -21,8 +21,8 @@ function addArticle(Request $request, Application $app) {
     $title = $request->request->get('titre');
     $content = $request->request->get('contenu');
     // Save the new article
-    $app['db']->insert('article', array('art_title' => $titre,
-        'art_content' => $contenu));
+    $app['db']->insert('article', array('art_title' => $title,
+        'art_content' => $content));
     // Return the id of the newly inserted article
     return $app['db']->lastInsertId();
 }
