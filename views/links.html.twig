@@ -1,0 +1,12 @@
+{% extends "layout.html.twig" %}
+{% set linksMenu = true %}
+
+{% block title %}Derniers liens{% endblock %}
+
+{% block content %}
+{% for link in links %}
+<p><strong>{{ link.titre }}</strong> (<a href="{{ link.url }}">{{ link.url }}</a>), publié par {{ link.auteur }}</p>
+{% else %}
+<div class="alert alert-warning">Aucun lien trouvé</div>
+{% endfor %}
+{% endblock %}

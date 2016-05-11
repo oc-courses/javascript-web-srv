@@ -38,6 +38,12 @@ $app->get('/temoignages', function() use ($app) {
     return $app['twig']->render('testimonials.html.twig', array('testimonials' => $testimonials));
 })->bind('testimonials');
 
+// Display last links
+$app->get('/liens', function() use ($app) {
+    $links = getLastLinks($app);
+    return $app['twig']->render('links.html.twig', array('links' => $links));
+})->bind('links');
+
 // ------- JSON API -------
 
 // Return last articles in JSON format
