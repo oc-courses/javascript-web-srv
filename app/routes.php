@@ -3,6 +3,8 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+// ------- HTML routes -------
+
 // Home page
 $app->get('/', function() use ($app) {
     return $app['twig']->render('index.html.twig');
@@ -16,14 +18,18 @@ $app->get('/articles', function() use ($app) {
 
 // Add an article from form data
 $app->post('/article', function(Request $request) use ($app) {
-    $articleId = addArticle($request, $app);
+    // Check request parameters
+    if (!$request->request->has('titre')) {
+        return $app->json('Missing required parameter: titre', 400);
+    }
+    if (!$request->request->has('contenu')) {
+        return $app->json('Missing required parameter: contenu', 400);
+    }
+    $title = $request->request->get('titre');
+    $content = $request->request->get('contenu');
+    // Add article into DB
+    $articleId = addArticle($title, $content, $app);
     return $app->redirect($app['url_generator']->generate('articles'));
-});
-
-// Return last articles in JSON format
-$app->get('/api/articles', function() use ($app) {
-    $articles = getLastArticles($app);
-    return $app->json($articles);
 });
 
 // Display all testimonials
@@ -32,6 +38,14 @@ $app->get('/temoignages', function() use ($app) {
     return $app['twig']->render('testimonials.html.twig', array('testimonials' => $testimonials));
 })->bind('testimonials');
 
+// ------- JSON API -------
+
+// Return last articles in JSON format
+$app->get('/api/articles', function() use ($app) {
+    $articles = getLastArticles($app);
+    return $app->json($articles);
+});
+
 // Add a testimonial from JSON data
 $app->post('/api/temoignage', function(Request $request) use ($app) {
     $testimonialId = addTestimonial($request, $app);
@@ -39,49 +53,39 @@ $app->post('/api/temoignage', function(Request $request) use ($app) {
 });
 
 // Return words starting with a particular letter in JSON format
-// Handles only "A", "B" and "C" letters
-$app->get('/api/lexique/{letter}', function ($letter, Request $request) use ($app) {
-    $words = array();
-    switch($letter) {
-        case "A":
-        array_push($words, array(
-            'term' => 'Acronyme',
-            'definition' => 'Sigle qui se prononce comme un mot ordinaire, sans épeler les lettres'));
-        array_push($words, array(
-            'term' => 'Asymptote',
-            'definition' => 'Droite, cercle ou point dont une courbe plus complexe peut se rapprocher'));
-        break;
-        case "B":
-        array_push($words, array(
-            'term' => 'Biopsie',
-            'definition' => "Prélèvement d'une très petite partie d'un organe ou d'un tissu pour effectuer des examens"));
-        array_push($words, array(
-            'term' => 'Botulisme',
-            'definition' => 'Maladie paralytique rare mais grave due à une neurotoxine bactérienne, la toxine botulique'));
-        break;
-        case "C":
-        array_push($words, array(
-            'term' => 'Cacochyme',
-            'definition' => "En état d’extrême faiblesse due à la vieillesse"));
-        array_push($words, array(
-            'term' => 'Cuticule',
-            'definition' => "Couche externe qui recouvre et protège les organes aériens des végétaux et les organes de certains animaux"));
-        break;
-    }
+$app->get('/api/lexique/{letter}', function ($letter) use ($app) {
+    $words = getWords($letter, $app);
     return $app->json($words);
 });
 
+// Return last links in JSON format
 $app->get('/api/liens', function() use ($app) {
-    $sql = "select l.link_id as id, link_title as titre, link_url as url, link_author as auteur, count(com_id) as commentaires
-        from link l left join comment c on l.link_id=c.link_id group by l.link_id order by l.link_id desc";
-    $result = $app['db']->fetchAll($sql);
-
-    return $app->json($result);
+    $links = getLastLinks($app);
+    return $app->json($links);
 });
 
+// Return comments for a specific link in JSON format
 $app->get('/api/commentaires/{linkId}', function($linkId) use ($app) {
-    $sql = "select * from comment where link_id=?";
-    $result = $app['db']->fetchAssoc($sql, array($linkId));
+    $comments = getComments($linkId, $app);
+    return $app->json($comments);
+});
 
-    return $app->json($result);
+// Add a link from JSON data
+$app->post('/api/lien', function(Request $request) use ($app) {
+    // Check request parameters
+    if (!$request->request->has('titre')) {
+        return $app->json('Missing required parameter: titre', 400);
+    }
+    if (!$request->request->has('url')) {
+        return $app->json('Missing required parameter: url', 400);
+    }
+    if (!$request->request->has('auteur')) {
+        return $app->json('Missing required parameter: auteur', 400);
+    }
+    $title = $request->request->get('titre');
+    $url = $request->request->get('url');
+    $author = $request->request->get('auteur');
+    // Add link into DB
+    $linkId = addLink($title, $url, $author, $app);
+    return $app->json($linkId, 201);  // 201 = Created
 });
